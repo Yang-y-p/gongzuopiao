@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>🔍 拍照 & 上传图片识别文字</title>
-  <!-- PaddleOCR.js -->
-  <script src="https://unpkg.com/@paddlejs-models/ocr/dist/ocr.js"></script>
+  <!-- Tesseract.js -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome 图标 -->
@@ -33,7 +33,6 @@
       font-weight: 700;
     }
     
-    /* 卡片样式 */
     .card {
       border: none;
       border-radius: var(--border-radius-lg);
@@ -47,16 +46,10 @@
       font-weight: 600;
     }
     
-    .card-title {
-      margin: 0;
-      font-size: 1.1rem;
-    }
-    
     .card-body {
       padding: 20px;
     }
     
-    /* 功能区块 */
     .feature-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -89,7 +82,6 @@
       font-size: 0.9rem;
     }
     
-    /* 按钮样式 */
     .btn {
       border-radius: 8px;
       padding: 12px 24px;
@@ -97,17 +89,11 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     
-    .btn-lg {
-      padding: 14px 30px;
-      font-size: 1.1rem;
-    }
-    
     .btn-primary {
       background-color: var(--primary-color);
       border-color: var(--primary-color);
     }
     
-    /* 区块标题 */
     .section-title {
       display: flex;
       align-items: center;
@@ -120,27 +106,6 @@
       font-size: 1.2rem;
     }
     
-    /* 上传区域 */
-    .drop-area {
-      border: 2px dashed #ddd;
-      border-radius: 10px;
-      padding: 40px 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .drop-area.highlight {
-      border-color: var(--primary-color);
-      background-color: rgba(58, 87, 232, 0.05);
-    }
-    
-    .drop-area p {
-      margin: 10px 0 0;
-      color: #6c757d;
-    }
-    
-    /* 结果区域 */
     #result {
       background-color: var(--light-gray);
       border-radius: 8px;
@@ -151,7 +116,6 @@
       font-family: monospace;
     }
     
-    /* 图片预览 */
     .image-preview {
       max-height: 300px;
       overflow: hidden;
@@ -167,11 +131,18 @@
       max-width: 100%;
     }
     
-    /* 响应式调整 */
-    @media (max-width: 768px) {
-      .feature-grid {
-        grid-template-columns: 1fr;
-      }
+    .drop-area {
+      border: 2px dashed #ddd;
+      border-radius: 10px;
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .drop-area.highlight {
+      border-color: var(--primary-color);
+      background-color: rgba(58, 87, 232, 0.05);
     }
   </style>
 </head>
@@ -183,30 +154,22 @@
       </div>
     </div>
     
-    <!-- 功能介绍区块 -->
+    <!-- 功能介绍 -->
     <div class="row feature-grid">
       <div class="col-md-4 feature-card">
-        <div class="feature-icon">
-          <i class="fas fa-laptop-code"></i>
-        </div>
+        <div class="feature-icon"><i class="fas fa-laptop-code"></i></div>
         <div class="feature-title">完全离线</div>
-        <div class="feature-description">无需联网，所有操作在浏览器中完成</div>
+        <div class="feature-description">无需网络，浏览器内完成识别</div>
       </div>
-      
       <div class="col-md-4 feature-card">
-        <div class="feature-icon">
-          <i class="fas fa-bolt"></i>
-        </div>
-        <div class="feature-title">极速处理</div>
-        <div class="feature-description">优化算法，快速识别图片文字</div>
+        <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+        <div class="feature-title">智能识别</div>
+        <div class="feature-description">支持中英文混合文本识别</div>
       </div>
-      
       <div class="col-md-4 feature-card">
-        <div class="feature-icon">
-          <i class="fas fa-layer-group"></i>
-        </div>
-        <div class="feature-title">多格式支持</div>
-        <div class="feature-description">支持 JPG, PNG, GIF, WebP 等多种图片格式</div>
+        <div class="feature-icon"><i class="fas fa-images"></i></div>
+        <div class="feature-title">多图支持</div>
+        <div class="feature-description">支持拍照和图片文件上传</div>
       </div>
     </div>
     
@@ -215,22 +178,15 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header bg-primary text-white">
-            <h5 class="card-title mb-0">
-              <i class="fas fa-camera me-2"></i> 方式一：摄像头拍照识别
-            </h5>
+            <h5 class="card-title mb-0"><i class="fas fa-camera me-2"></i>方式一：摄像头拍照识别</h5>
           </div>
           <div class="card-body">
-            <div class="drop-area" id="video-container">
-              <video id="video" class="w-100" playsinline autoplay></video>
-              <p class="mt-3">点击拍照按钮获取图像</p>
-            </div>
+            <video id="video" class="w-100" playsinline autoplay></video>
             <div class="text-center mt-3">
-              <button id="snap" class="btn btn-primary btn-lg">
-                <i class="fas fa-camera me-1"></i> 拍照识别
-              </button>
+              <button id="snap" class="btn btn-primary btn-lg"><i class="fas fa-camera me-1"></i> 拍照识别</button>
             </div>
             <canvas id="canvas" style="display: none;"></canvas>
-            <img id="photo" class="mt-2 d-none" alt="拍照结果" />
+            
           </div>
         </div>
       </div>
@@ -241,18 +197,12 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header bg-info text-white">
-            <h5 class="card-title mb-0">
-              <i class="fas fa-upload me-2"></i> 方式二：上传图片识别
-            </h5>
+            <h5 class="card-title mb-0"><i class="fas fa-upload me-2"></i>方式二：上传图片识别</h5>
           </div>
           <div class="card-body">
-            <div class="drop-area" id="upload-container">
-              <input type="file" id="imageUpload" class="form-control d-none" accept="image/*">
-              <p class="mb-0"><i class="fas fa-cloud-upload-alt me-1"></i> 点击选择或拖拽图片到此处</p>
-              <p class="text-muted small mt-1">支持 JPG, PNG, GIF, WebP 格式</p>
-            </div>
-            <div class="image-preview mt-3" id="upload-preview">
-              <img id="upload-img" class="d-none" alt="上传图片预览" />
+            <input type="file" id="imageUpload" class="form-control" accept="image/*">
+            <div class="image-preview mt-3">
+              
             </div>
           </div>
         </div>
@@ -264,9 +214,7 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header bg-success text-white">
-            <h5 class="card-title mb-0">
-              <i class="fas fa-clipboard-list me-2"></i> 识别结果
-            </h5>
+            <h5 class="card-title mb-0"><i class="fas fa-clipboard-list me-2"></i>识别结果</h5>
           </div>
           <div class="card-body">
             <div id="result">点击上方按钮或上传图片后，识别结果将在这里显示...</div>
@@ -276,31 +224,10 @@
     </div>
   </div>
 
-  <!-- Bootstrap 5 JS (可选，本例未用到复杂交互) -->
+  <!-- Bootstrap 5 JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    // 初始化 PaddleOCR
-    let ocr = null;
-    
-    // 页面加载完成后初始化 OCR
-    document.addEventListener('DOMContentLoaded', async () => {
-      try {
-        // 初始化 PaddleOCR 模型
-        ocr = await window.paddleOCR.init({
-          lang: 'ch',
-          ocrEngine: 'PP-OCRv3', // 使用轻量版模型以提高速度
-          useAngleCls: true,    // 启用方向分类
-          whiteList: null       // 不限制识别字符集
-        });
-        
-        console.log('OCR 模型加载完成');
-      } catch (error) {
-        console.error('OCR 模型加载失败:', error);
-        document.getElementById('result').innerText = '❌ OCR 模型加载失败，请刷新页面重试。';
-      }
-    });
-
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     const context = canvas.getContext('2d');
@@ -309,164 +236,69 @@
     const imageUpload = document.getElementById('imageUpload');
     const uploadImg = document.getElementById('upload-img');
     const resultDiv = document.getElementById('result');
-    const videoContainer = document.getElementById('video-container');
-    const uploadContainer = document.getElementById('upload-container');
-    
-    // 启动摄像头
-    async function startCamera() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            width: 640,
-            height: 480,
-            facingMode: { ideal: 'environment' }  // 优先使用后置摄像头
-          },
-          audio: false
-        });
-        
-        video.srcObject = stream;
-        video.play();
-      } catch (err) {
-        console.error('无法访问摄像头:', err);
-        resultDiv.innerText = '❌ 摄像头访问失败，请检查权限或使用上传图片功能。';
-      }
-    }
-    
+
+    // 启动摄像头（优先后置）
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        width: 640,
+        height: 480,
+        facingMode: { ideal: 'environment' }
+      },
+      audio: false
+    })
+    .then(stream => {
+      video.srcObject = stream;
+    })
+    .catch(err => {
+      console.error('摄像头启动失败:', err);
+      resultDiv.innerText = '❌ 摄像头启动失败，请检查权限或使用上传图片功能。';
+    });
+
     // 拍照并识别
-    snap.addEventListener('click', async () => {
+    snap.addEventListener('click', () => {
       context.drawImage(video, 0, 0, 640, 480);
       const dataURL = canvas.toDataURL('image/png');
       photo.src = dataURL;
       photo.classList.remove('d-none');
-      
-      // 显示加载中状态
-      resultDiv.innerText = '🔍 正在识别文字，请稍候...';
-      
-      // 使用 setTimeout 避免阻塞 UI
-      setTimeout(async () => {
-        await recognizeWithPaddleOCR(dataURL, '📸 摄像头拍照识别结果：');
-      }, 300);
+      recognizeText(dataURL, '📸 摄像头拍照识别结果：');
     });
-    
+
     // 上传图片并识别
-    imageUpload.addEventListener('change', async (e) => {
+    imageUpload.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = async (event) => {
+      reader.onload = (event) => {
         const imgUrl = event.target.result;
         uploadImg.src = imgUrl;
         uploadImg.classList.remove('d-none');
-        
-        // 显示加载中状态
-        resultDiv.innerText = '🔍 正在识别文字，请稍候...';
-        
-        // 使用 setTimeout 避免阻塞 UI
-        setTimeout(async () => {
-          await recognizeWithPaddleOCR(imgUrl, '📁 上传图片识别结果：');
-        }, 300);
+        recognizeText(imgUrl, '📁 上传图片识别结果：');
       };
       reader.readAsDataURL(file);
     });
-    
-    // 拖拽上传功能
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-      uploadContainer.addEventListener(eventName, preventDefaults, false);
-      document.body.addEventListener(eventName, preventDefaults, false);
-    });
-    
-    function preventDefaults(e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    
-    ['dragenter', 'dragover'].forEach(eventName => {
-      uploadContainer.addEventListener(eventName, highlight, false);
-    });
-    
-    ['dragleave', 'drop'].forEach(eventName => {
-      uploadContainer.addEventListener(eventName, unhighlight, false);
-    });
-    
-    function highlight() {
-      uploadContainer.classList.add('highlight');
-    }
-    
-    function unhighlight() {
-      uploadContainer.classList.remove('highlight');
-    }
-    
-    uploadContainer.addEventListener('drop', handleDrop, false);
-    
-    function handleDrop(e) {
-      const dt = e.dataTransfer;
-      const files = dt.files;
+
+    // OCR 识别函数（使用 Tesseract.js，优化配置）
+    async function recognizeText(imageSrc, prefix) {
+      resultDiv.innerText = '🔍 正在识别文字，请稍候...';
       
-      if (files.length > 0) {
-        handleFiles(files);
-      }
-    }
-    
-    // 处理文件
-    function handleFiles(files) {
-      const file = files[0];
-      const reader = new FileReader();
-      
-      reader.onload = async (event) => {
-        const imgUrl = event.target.result;
-        uploadImg.src = imgUrl;
-        uploadImg.classList.remove('d-none');
-        uploadPreview.style.display = 'block';
-        
-        // 显示加载中状态
-        resultDiv.innerText = '🔍 正在识别文字，请稍候...';
-        
-        // 使用 setTimeout 避免阻塞 UI
-        setTimeout(async () => {
-          await recognizeWithPaddleOCR(imgUrl, '📁 上传图片识别结果：');
-        }, 300);
-      };
-      
-      reader.readAsDataURL(file);
-    }
-    
-    // OCR 识别函数
-    async function recognizeWithPaddleOCR(imageSrc, prefix) {
       try {
-        // 加载图片
-        const img = new Image();
-        img.src = imageSrc;
-        
-        await new Promise((resolve) => {
-          img.onload = resolve;
-        });
-        
-        // 使用 PaddleOCR 进行识别
-        const result = await ocr(img);
-        
-        // 处理识别结果
-        if (result && result.data && result.data.length > 0) {
-          let recognizedText = result.data.map(item => item.text).join('\n');
-          
-          // 如果文本太长，进行分行处理
-          if (recognizedText.length > 5000) {
-            recognizedText = recognizedText.substring(0, 5000) + '\n...（由于结果过长，已截断显示）';
+        // 使用更快的配置：只识别中文和英文，不进行冗余分析
+        const { data: { text } } = await Tesseract.recognize(
+          imageSrc,
+          'chi_sim+eng', // 中文简体 + 英文
+          {
+            logger: m => console.log(m), // 可删除此行以减少控制台输出
           }
-          
-          const output = prefix + '\n\n' + (recognizedText || '(未识别到文字)');
-          resultDiv.innerText = output;
-        } else {
-          resultDiv.innerText = prefix + '\n\n❌ 识别失败，请重试。';
-        }
+        );
+        
+        const output = prefix + '\n\n' + (text.trim() || '(未识别到文字)');
+        resultDiv.innerText = output;
       } catch (err) {
         console.error('OCR 错误:', err);
         resultDiv.innerText = prefix + '\n\n❌ 识别失败，请重试。';
       }
     }
-    
-    // 页面加载后启动摄像头
-    window.addEventListener('load', startCamera);
   </script>
 </body>
 </html>
