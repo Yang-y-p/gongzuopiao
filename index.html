@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🔍 拍照 & 上传识别文字</title>
-  <!-- Tesseract.js -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+  <title>🔍 拍照 & 上传图片识别文字</title>
+  <!-- PaddleOCR.js -->
+  <script src="https://unpkg.com/@paddlejs-models/ocr/dist/ocr.js"></script>
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome 图标 -->
@@ -280,17 +280,95 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
+    // 初始化 PaddleOCR
+    let ocr = null;
+    
+    // 页面加载完成后初始化 OCR
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // 初始化 PaddleOCR 模型
+        ocr = await window.paddleOCR.init({
+          lang: 'ch',
+          ocrEngine: 'PP-OCRv3', // 使用轻量版模型以提高速度
+          useAngleCls: true,    // 启用方向分类
+          whiteList: null       // 不限制识别字符集
+        });
+        
+        console.log('OCR 模型加载完成');
+      } catch (error) {
+        console.error('OCR 模型加载失败:', error);
+        document.getElementById('result').innerText = '❌ OCR 模型加载失败，请刷新页面重试。';
+      }
+    });
+
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     const context = canvas.getContext('2d');
     const snap = document.getElementById('snap');
     const photo = document.getElementById('photo');
     const imageUpload = document.getElementById('imageUpload');
-    const uploadPreview = document.getElementById('upload-preview');
     const uploadImg = document.getElementById('upload-img');
     const resultDiv = document.getElementById('result');
     const videoContainer = document.getElementById('video-container');
     const uploadContainer = document.getElementById('upload-container');
+    
+    // 启动摄像头
+    async function startCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            width: 640,
+            height: 480,
+            facingMode: { ideal: 'environment' }  // 优先使用后置摄像头
+          },
+          audio: false
+        });
+        
+        video.srcObject = stream;
+        video.play();
+      } catch (err) {
+        console.error('无法访问摄像头:', err);
+        resultDiv.innerText = '❌ 摄像头访问失败，请检查权限或使用上传图片功能。';
+      }
+    }
+    
+    // 拍照并识别
+    snap.addEventListener('click', async () => {
+      context.drawImage(video, 0, 0, 640, 480);
+      const dataURL = canvas.toDataURL('image/png');
+      photo.src = dataURL;
+      photo.classList.remove('d-none');
+      
+      // 显示加载中状态
+      resultDiv.innerText = '🔍 正在识别文字，请稍候...';
+      
+      // 使用 setTimeout 避免阻塞 UI
+      setTimeout(async () => {
+        await recognizeWithPaddleOCR(dataURL, '📸 摄像头拍照识别结果：');
+      }, 300);
+    });
+    
+    // 上传图片并识别
+    imageUpload.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        const imgUrl = event.target.result;
+        uploadImg.src = imgUrl;
+        uploadImg.classList.remove('d-none');
+        
+        // 显示加载中状态
+        resultDiv.innerText = '🔍 正在识别文字，请稍候...';
+        
+        // 使用 setTimeout 避免阻塞 UI
+        setTimeout(async () => {
+          await recognizeWithPaddleOCR(imgUrl, '📁 上传图片识别结果：');
+        }, 300);
+      };
+      reader.readAsDataURL(file);
+    });
     
     // 拖拽上传功能
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -330,73 +408,57 @@
       }
     }
     
-    // 启动摄像头
-    async function startCamera() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            width: 640,
-            height: 480,
-            facingMode: { ideal: 'environment' }  // 优先使用后置摄像头
-          },
-          audio: false
-        });
-        
-        video.srcObject = stream;
-        video.play();
-      } catch (err) {
-        console.error('无法访问摄像头:', err);
-        resultDiv.innerText = '❌ 摄像头访问失败，请检查权限或使用上传图片功能。';
-      }
-    }
-    
-    // 拍照并识别
-    snap.addEventListener('click', () => {
-      context.drawImage(video, 0, 0, 640, 480);
-      const dataURL = canvas.toDataURL('image/png');
-      photo.src = dataURL;
-      photo.classList.remove('d-none');
-      recognizeText(dataURL, '📸 摄像头拍照识别结果：');
-    });
-    
-    // 上传图片并识别
-    imageUpload.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      
-      handleFiles([file]);
-    });
-    
     // 处理文件
     function handleFiles(files) {
       const file = files[0];
       const reader = new FileReader();
       
-      reader.onload = (event) => {
+      reader.onload = async (event) => {
         const imgUrl = event.target.result;
         uploadImg.src = imgUrl;
         uploadImg.classList.remove('d-none');
         uploadPreview.style.display = 'block';
         
-        recognizeText(imgUrl, '📁 上传图片识别结果：');
+        // 显示加载中状态
+        resultDiv.innerText = '🔍 正在识别文字，请稍候...';
+        
+        // 使用 setTimeout 避免阻塞 UI
+        setTimeout(async () => {
+          await recognizeWithPaddleOCR(imgUrl, '📁 上传图片识别结果：');
+        }, 300);
       };
       
       reader.readAsDataURL(file);
     }
     
     // OCR 识别函数
-    async function recognizeText(imageSrc, prefix) {
-      resultDiv.innerText = '🔍 正在识别文字，请稍候...';
-      
+    async function recognizeWithPaddleOCR(imageSrc, prefix) {
       try {
-        const { data: { text } } = await Tesseract.recognize(
-          imageSrc,
-          'chi_sim+eng',
-          { logger: m => console.log(m) }
-        );
+        // 加载图片
+        const img = new Image();
+        img.src = imageSrc;
         
-        const output = prefix + '\n\n' + (text.trim() || '(未识别到文字)');
-        resultDiv.innerText = output;
+        await new Promise((resolve) => {
+          img.onload = resolve;
+        });
+        
+        // 使用 PaddleOCR 进行识别
+        const result = await ocr(img);
+        
+        // 处理识别结果
+        if (result && result.data && result.data.length > 0) {
+          let recognizedText = result.data.map(item => item.text).join('\n');
+          
+          // 如果文本太长，进行分行处理
+          if (recognizedText.length > 5000) {
+            recognizedText = recognizedText.substring(0, 5000) + '\n...（由于结果过长，已截断显示）';
+          }
+          
+          const output = prefix + '\n\n' + (recognizedText || '(未识别到文字)');
+          resultDiv.innerText = output;
+        } else {
+          resultDiv.innerText = prefix + '\n\n❌ 识别失败，请重试。';
+        }
       } catch (err) {
         console.error('OCR 错误:', err);
         resultDiv.innerText = prefix + '\n\n❌ 识别失败，请重试。';
