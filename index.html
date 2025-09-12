@@ -285,6 +285,7 @@
             border: 1px solid #feb2b2;
         }
 
+        /* 响应式调整 */
         @media (max-width: 768px) {
             body {
                 padding: 5px;
@@ -308,14 +309,27 @@
                 padding: 20px;
             }
 
+            .form-group {
+                margin-bottom: 16px;
+            }
+
+            .form-group label {
+                font-size: 0.9em;
+            }
+
             .submit-btn {
                 padding: 14px 20px;
                 font-size: 16px;
                 min-height: 44px;
             }
 
+            .table-container {
+                max-height: 300px;
+            }
+
             table {
                 font-size: 12px;
+                min-width: 500px;
             }
 
             th, td {
@@ -335,9 +349,48 @@
                 padding: 12px;
             }
 
+            .delete-btn {
+                padding: 3px 6px;
+                font-size: 11px;
+            }
+
+            /* 调整表单输入框在移动设备上的大小 */
             .form-group input,
             .form-group textarea {
-                font-size: 16px;
+                padding: 10px 12px;
+                font-size: 15px;
+            }
+
+            /* 调整复选框大小 */
+            .checkbox-group input[type="checkbox"] {
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .clock {
+                font-size: 1.5em;
+            }
+
+            .date {
+                font-size: 1em;
+            }
+
+            table {
+                font-size: 11px;
+            }
+
+            th, td {
+                padding: 4px 2px;
+            }
+
+            .status-badge {
+                font-size: 11px;
+                min-width: 50px;
             }
         }
     </style>
@@ -425,8 +478,6 @@
         // - escapeHtml()
         // - formatDateTime()
         // - formatDate()
-
-        // ✅ 请直接复制粘贴下面完整的 JS 部分（和您原来的逻辑完全一致，仅优化了 sendWeChatNotification 中的提示逻辑）
 
         let workRecords = JSON.parse(localStorage.getItem('workRecords')) || [];
         let checkInterval;
