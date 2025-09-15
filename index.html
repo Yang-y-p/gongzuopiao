@@ -293,7 +293,7 @@
         /* 手机端缩放控制 */
         @media (max-width: 768px) {
             :root {
-                --mobile-scale: 0.65; /* 缩小到70% */
+                --mobile-scale: 0.55; /* 缩小到70% */
             }
             
             .clock-section {
@@ -352,7 +352,7 @@
         /* 更小屏幕的额外调整 */
         @media (max-width: 480px) {
             :root {
-                --mobile-scale: 0.6; /* 在更小屏幕上进一步缩小 */
+                --mobile-scale: 0.5; /* 在更小屏幕上进一步缩小 */
             }
             
             .header h1 {
@@ -423,28 +423,28 @@
         
         @media (max-width: 480px) {
             .header h1 {
-                font-size: calc(1.5em * 0.7);
+                font-size: calc(1.5em * 0.5);
             }
         
             .clock {
-                font-size: calc(1.8em * 0.7);
+                font-size: calc(1.8em * 0.5);
             }
         
             .date {
-                font-size: calc(1.1em * 0.7);
+                font-size: calc(1.1em * 0.5);
             }
             
             table {
-                font-size: calc(11px * 0.7);
+                font-size: calc(11px * 0.5);
             }
             
             th, td {
-                padding: calc(4px * 0.7) calc(2px * 0.7);
+                padding: calc(4px * 0.5) calc(2px * 0.5);
             }
             
             .status-badge {
-                font-size: calc(11px * 0.7);
-                min-width: calc(50px * 0.7);
+                font-size: calc(11px * 0.5);
+                min-width: calc(50px * 0.5);
             }
         }
     </style>
@@ -771,4 +771,5 @@
     </script>
 </body>
 </html>
+
 
