@@ -290,109 +290,77 @@
             body {
                 padding: 5px;
             }
-
+        
             .main-content {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr; /* 在小屏幕上改为单列布局 */
                 gap: 20px;
                 padding: 15px;
             }
-
-            .header h1 {
-                font-size: 1.8em;
-            }
-
-            .header p {
-                font-size: 1em;
-            }
-
+        
             .form-section, .archive-section {
                 padding: 20px;
             }
-
+        
             .form-group {
                 margin-bottom: 16px;
             }
-
+        
             .form-group label {
                 font-size: 0.9em;
             }
-
+        
             .submit-btn {
                 padding: 14px 20px;
                 font-size: 16px;
                 min-height: 44px;
             }
-
+        
             .table-container {
                 max-height: 300px;
             }
-
+        
             table {
                 font-size: 12px;
                 min-width: 500px;
             }
-
+        
             th, td {
                 padding: 6px 4px;
             }
-
-            .clock {
-                font-size: 1.8em;
-            }
-
-            .date {
-                font-size: 1.1em;
-            }
-
-            .alert {
-                margin: 10px 0;
-                padding: 12px;
-            }
-
-            .delete-btn {
-                padding: 3px 6px;
-                font-size: 11px;
-            }
-
-            /* 调整表单输入框在移动设备上的大小 */
-            .form-group input,
-            .form-group textarea {
-                padding: 10px 12px;
-                font-size: 15px;
-            }
-
-            /* 调整复选框大小 */
-            .checkbox-group input[type="checkbox"] {
-                transform: scale(1);
+        
+            .status-badge {
+                font-size: 12px;
+                min-width: 60px;
             }
         }
-
+        
         @media (max-width: 480px) {
             .header h1 {
                 font-size: 1.5em;
             }
-
+        
             .clock {
-                font-size: 1.5em;
+                font-size: 1.8em;
             }
-
+        
             .date {
-                font-size: 1em;
+                font-size: 1.1em;
             }
-
+        
             table {
                 font-size: 11px;
             }
-
+        
             th, td {
                 padding: 4px 2px;
             }
-
+        
             .status-badge {
                 font-size: 11px;
                 min-width: 50px;
             }
         }
+        
     </style>
 </head>
 <body>
@@ -715,4 +683,5 @@
     </script>
 </body>
 </html>
+
 
