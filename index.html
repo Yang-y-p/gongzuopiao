@@ -285,172 +285,61 @@
             border: 1px solid #feb2b2;
         }
 
-        /* 新增：响应式缩放控制 */
+        /* 响应式设计部分保持不变 */
         :root {
-            --mobile-scale: 1; /* 默认不缩放 */
+            --mobile-scale: 1;
         }
-        
-        /* 手机端缩放控制 */
+
         @media (max-width: 768px) {
             :root {
-                --mobile-scale: 0.55; /* 缩小到70% */
+                --mobile-scale: 0.55;
             }
-            
-            .clock-section {
-                padding: calc(20px * var(--mobile-scale));
-            }
-            
-            .form-section, .archive-section {
-                padding: calc(25px * var(--mobile-scale));
-            }
-            
-            .form-group input,
-            .form-group textarea,
-            .form-group select {
-                padding: calc(12px * var(--mobile-scale)) calc(15px * var(--mobile-scale));
-                font-size: calc(16px * var(--mobile-scale));
-            }
-            
-            .form-group label {
-                font-size: calc(0.95em * var(--mobile-scale));
-            }
-            
-            .checkbox-group input[type="checkbox"] {
-                transform: scale(calc(1.2 * var(--mobile-scale)));
-            }
-            
-            .submit-btn {
-                padding: calc(14px * var(--mobile-scale)) calc(30px * var(--mobile-scale));
-                min-height: calc(44px * var(--mobile-scale));
-                font-size: calc(16px * var(--mobile-scale));
-            }
-            
-            .table-container {
-                max-height: calc(400px * var(--mobile-scale));
-            }
-            
-            table {
-                font-size: calc(14px * var(--mobile-scale));
-                min-width: calc(600px * var(--mobile-scale));
-            }
-            
-            th, td {
-                padding: calc(10px * var(--mobile-scale)) calc(8px * var(--mobile-scale));
-            }
-            
-            .status-badge {
-                font-size: calc(12px * var(--mobile-scale));
-                min-width: calc(60px * var(--mobile-scale));
-            }
-            
-            .delete-btn {
-                font-size: calc(12px * var(--mobile-scale));
-                min-height: auto;
-            }
-        }
-        
-        /* 更小屏幕的额外调整 */
-        @media (max-width: 480px) {
-            :root {
-                --mobile-scale: 0.5; /* 在更小屏幕上进一步缩小 */
-            }
-            
-            .header h1 {
-                font-size: calc(2.5em * 0.7);
-            }
-            
-            .clock {
-                font-size: calc(2em * 0.7);
-            }
-            
-            .date {
-                font-size: calc(1.2em * 0.7);
-            }
-            
-            table {
-                min-width: calc(600px * 0.65);
-            }
-        }
-        
-        /* 响应式调整保持原有结构但使用缩放变量 */
-        @media (max-width: 768px) {
-            body {
-                padding: calc(10px * var(--mobile-scale));
-            }
-        
+
             .main-content {
                 grid-template-columns: 1fr;
                 gap: calc(30px * var(--mobile-scale));
                 padding: calc(30px * var(--mobile-scale));
             }
-            
+
+            .clock-section {
+                padding: calc(20px * var(--mobile-scale));
+            }
+
             .form-section, .archive-section {
                 padding: calc(20px * var(--mobile-scale));
             }
-            
-            .form-group {
-                margin-bottom: calc(20px * var(--mobile-scale));
-            }
-            
-            .form-group label {
-                font-size: calc(0.9em * var(--mobile-scale));
-            }
-            
-            .submit-btn {
-                padding: calc(12px * var(--mobile-scale)) calc(20px * var(--mobile-scale));
-                font-size: calc(16px * var(--mobile-scale));
-                min-height: calc(44px * var(--mobile-scale));
-            }
-            
-            .table-container {
-                max-height: calc(300px * var(--mobile-scale));
-            }
-            
-            table {
-                font-size: calc(12px * var(--mobile-scale));
-                min-width: calc(500px * var(--mobile-scale));
-            }
-            
-            th, td {
-                padding: calc(6px * var(--mobile-scale)) calc(4px * var(--mobile-scale));
-            }
-            
-            .status-badge {
-                font-size: calc(12px * var(--mobile-scale));
-                min-width: calc(50px * var(--mobile-scale));
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .header h1 {
-                font-size: calc(1.5em * 0.5);
-            }
-        
+
             .clock {
-                font-size: calc(1.8em * 0.5);
+                font-size: calc(2em * 0.7);
             }
-        
+
             .date {
-                font-size: calc(1.1em * 0.5);
+                font-size: calc(1.2em * 0.7);
             }
-            
+
             table {
-                font-size: calc(11px * 0.5);
+                font-size: calc(14px * 0.7);
+                min-width: calc(600px * 0.65);
             }
-            
+
             th, td {
-                padding: calc(4px * 0.5) calc(2px * 0.5);
+                padding: calc(10px * 0.7) calc(8px * 0.7);
             }
-            
+
             .status-badge {
-                font-size: calc(11px * 0.5);
-                min-width: calc(50px * 0.5);
+                font-size: calc(12px * 0.7);
+                min-width: calc(60px * 0.7);
+            }
+
+            .form-group input,
+            .form-group textarea {
+                padding: calc(12px * var(--mobile-scale)) calc(15px * var(--mobile-scale));
+                font-size: calc(16px * var(--mobile-scale));
             }
         }
     </style>
 </head>
 <body>
-    <!-- 原有HTML结构保持不变 -->
     <div class="container">
         <div class="header">
             <h1>工作票管理提醒系统</h1>
@@ -479,8 +368,8 @@
                         <input type="datetime-local" id="endTime" name="endTime" required>
                     </div>
                     <div class="form-group">
- 			<label for="sckey">SCKEY (微信推送密钥，每行一个)</label>
-    			<textarea id="sckey" name="sckey" placeholder="请输入Server酱的SCKEY，每行一个（可选，用于微信推送提醒）&#10;例如：&#10;SCU123456...&#10;SC654321..." rows="3"></textarea>
+                        <label for="sckey">SCKEY (微信推送密钥，每行一个)</label>
+                        <textarea id="sckey" name="sckey" placeholder="请输入Server酱的SCKEY，每行一个（可选，用于微信推送提醒）&#10;例如：&#10;SCU123456...&#10;SC654321..." rows="3"></textarea>
                     </div>
                     <div class="checkbox-group">
                         <input type="checkbox" id="saveToArchive" name="saveToArchive" checked>
@@ -516,25 +405,6 @@
     </div>
 
     <script>
-        // 原有JavaScript代码保持不变
-        // 全部 JavaScript 代码保持不变，和您原来的一样，包括：
-        // - initializeClock()
-        // - initializeForm()
-        // - handleFormSubmit()
-        // - isValidDateTime()
-        // - showAlert()
-        // - renderArchiveTable()
-        // - createTableRow()
-        // - calculateStatus()
-        // - deleteRecord()
-        // - startStatusChecker()
-        // - checkAndNotify()
-        // - sendNotification()
-        // - sendWeChatNotification()
-        // - escapeHtml()
-        // - formatDateTime()
-        // - formatDate()
-
         let workRecords = JSON.parse(localStorage.getItem('workRecords')) || [];
         let checkInterval;
 
@@ -569,18 +439,19 @@
         function handleFormSubmit(event) {
             event.preventDefault();
             const formData = new FormData(event.target);
+            const sckeyText = formData.get('sckey').trim();
+            const sckeyArray = sckeyText
+                ? sckeyText.split('\n')
+                    .map(key => key.trim())
+                    .filter(key => key.length > 0)
+                : [];
+
             const workData = {
                 id: Date.now(),
                 worker: formData.get('worker').trim(),
                 content: formData.get('content').trim(),
                 endTime: formData.get('endTime'),
-		// 获取多行 SCKEY，按换行符分割，过滤空行
-		const sckeyText = formData.get('sckey').trim();
-		const sckeyArray = sckeyText
-    			? sckeyText.split('\n')
-        			.map(key => key.trim())
-       				.filter(key => key.length > 0)
-   			 : [];
+                sckey: sckeyArray,
                 saveToArchive: formData.get('saveToArchive') === 'on',
                 createTime: new Date().toISOString(),
                 notified: false
@@ -645,7 +516,7 @@
                 <td>${escapeHtml(record.worker)}</td>
                 <td>${escapeHtml(record.content)}</td>
                 <td>${formatDateTime(record.endTime)}</td>
-		<td>${Array.isArray(record.sckey) && record.sckey.length > 0 ? record.sckey.join(', ') : '未设置'}</td>
+                <td>${Array.isArray(record.sckey) && record.sckey.length > 0 ? record.sckey.join(', ') : '未设置'}</td>
                 <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                 <td>${formatDate(record.createTime)}</td>
                 <td><button class="delete-btn" onclick="deleteRecord(${record.id})">删除</button></td>
@@ -701,34 +572,34 @@
             renderArchiveTable();
         }
 
-	function sendNotification(record, statusInfo) {
-   		const now = new Date();
-    		const endDateTime = new Date(record.endTime);
-   		const daysDiff = (endDateTime - now) / (1000 * 60 * 60 * 24);
+        function sendNotification(record, statusInfo) {
+            const now = new Date();
+            const endDateTime = new Date(record.endTime);
+            const daysDiff = (endDateTime - now) / (1000 * 60 * 60 * 24);
 
-    		let message = '';
-   		 if (daysDiff < 0) {
-        		message = `【工作提醒】任务已过期！\n工作负责人：${record.worker}\n工作票内容：${record.content}\n结束时间：${formatDateTime(record.endTime)}\n当前状态：已过期`;
-    		} else if (daysDiff <= 1) {
-       			 message = `【紧急工作提醒】任务即将到期！\n工作负责人：${record.worker}\n工作票内容：${record.content}\n结束时间：${formatDateTime(record.endTime)}\n剩余时间：约${Math.ceil(daysDiff * -1)}天\n请及时处理！`;
-    		} else if (daysDiff <= 2) {
-        		message = `【工作提醒】任务即将到期！\n工作负责人：${record.worker}\n工作票内容：${record.content}\n结束时间：${formatDateTime(record.endTime)}\n剩余时间：约${Math.ceil(daysDiff * -1)}天\n请提前准备！`;
-   		 } else {
-        		message = `【工作提醒】任务即将到来！\n工作负责人：${record.worker}\n工作票内容：${record.content}\n结束时间：${formatDateTime(record.endTime)}\n剩余时间：约${Math.ceil(daysDiff)}天`;
-    		}
+            let message = '';
+            if (daysDiff < 0) {
+                message = `【工作提醒】任务已过期！\n工作负责人：${record.worker}\n工作票内容：${record.content}\n结束时间：${formatDateTime(record.endTime)}\n当前状态：已过期`;
+            } else if (daysDiff <= 1) {
+                message = `【紧急工作提醒】任务即将到期！\n工作负责人：${record.worker}\n工作票内容：${record.content}\n结束时间：${formatDateTime(record.endTime)}\n剩余时间：约${Math.ceil(Math.abs(daysDiff))}天\n请及时处理！`;
+            } else if (daysDiff <= 2) {
+                message = `【工作提醒】任务即将到期！\n工作负责人：${record.worker}\n工作票内容：${record.content}\n结束时间：${formatDateTime(record.endTime)}\n剩余时间：约${Math.ceil(Math.abs(daysDiff))}天\n请提前准备！`;
+            } else {
+                message = `【工作提醒】任务即将到来！\n工作负责人：${record.worker}\n工作票内容：${record.content}\n结束时间：${formatDateTime(record.endTime)}\n剩余时间：约${Math.ceil(daysDiff)}天`;
+            }
 
-    		console.log('准备发送通知:', message);
+            console.log('准备发送通知:', message);
 
-   		if (Array.isArray(record.sckey) && record.sckey.length > 0) {
-        		record.sckey.forEach((sckey, index) => {
-            		console.log(`正在向第 ${index + 1} 个 SCKEY 发送通知:`, sckey);
-            			sendWeChatNotification(sckey, message);
-       			 });
-  		} else {
-       		console.log('未设置任何 SCKEY，仅控制台输出提醒:', message);
-       		showAlert(`检测到需要提醒的任务：${record.worker} - ${record.content}，但没有配置微信通知渠道`, 'warning');
-   		}
-	}
+            if (Array.isArray(record.sckey) && record.sckey.length > 0) {
+                record.sckey.forEach((sckey, index) => {
+                    console.log(`正在向第 ${index + 1} 个 SCKEY 发送通知:`, sckey);
+                    sendWeChatNotification(sckey, message);
+                });
+            } else {
+                console.log('未设置任何 SCKEY，仅控制台输出提醒:', message);
+                showAlert(`检测到需要提醒的任务：${record.worker} - ${record.content}，但没有配置微信通知渠道`, 'warning');
+            }
+        }
 
         function sendWeChatNotification(sckey, message) {
             const url = `https://sctapi.ftqq.com/${sckey}.send`;
