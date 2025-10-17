@@ -286,13 +286,13 @@
         }
         /* 新增：响应式缩放控制 */
         :root {
-            --mobile-scale:1; /* 默认不缩放 */
+            --mobile-scale: 1; /* 默认不缩放 */
         }
         
         /* 手机端缩放控制 */
         @media (max-width: 768px) {
             :root {
-                --mobile-scale: 0.45; /* 缩小到70% */
+                --mobile-scale: 0.55; /* 缩小到70% */
             }
             
             .clock-section {
@@ -369,7 +369,83 @@
             table {
                 min-width: calc(600px * 0.65);
             }
-        } 
+        }
+        
+        /* 响应式调整保持原有结构但使用缩放变量 */
+        @media (max-width: 768px) {
+            body {
+                padding: calc(10px * var(--mobile-scale));
+            }
+        
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: calc(30px * var(--mobile-scale));
+                padding: calc(30px * var(--mobile-scale));
+            }
+            
+            .form-section, .archive-section {
+                padding: calc(20px * var(--mobile-scale));
+            }
+            
+            .form-group {
+                margin-bottom: calc(20px * var(--mobile-scale));
+            }
+            
+            .form-group label {
+                font-size: calc(0.9em * var(--mobile-scale));
+            }
+            
+            .submit-btn {
+                padding: calc(12px * var(--mobile-scale)) calc(20px * var(--mobile-scale));
+                font-size: calc(16px * var(--mobile-scale));
+                min-height: calc(44px * var(--mobile-scale));
+            }
+            
+            .table-container {
+                max-height: calc(300px * var(--mobile-scale));
+            }
+            
+            table {
+                font-size: calc(12px * var(--mobile-scale));
+                min-width: calc(500px * var(--mobile-scale));
+            }
+            
+            th, td {
+                padding: calc(6px * var(--mobile-scale)) calc(4px * var(--mobile-scale));
+            }
+            
+            .status-badge {
+                font-size: calc(12px * var(--mobile-scale));
+                min-width: calc(50px * var(--mobile-scale));
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: calc(1.5em * 0.5);
+            }
+        
+            .clock {
+                font-size: calc(1.8em * 0.5);
+            }
+        
+            .date {
+                font-size: calc(1.1em * 0.5);
+            }
+            
+            table {
+                font-size: calc(11px * 0.5);
+            }
+            
+            th, td {
+                padding: calc(4px * 0.5) calc(2px * 0.5);
+            }
+            
+            .status-badge {
+                font-size: calc(11px * 0.5);
+                min-width: calc(50px * 0.5);
+            }
+        }
     </style>
 </head>
 <body>
@@ -689,5 +765,3 @@
     </script>
 </body>
 </html>
-
-
