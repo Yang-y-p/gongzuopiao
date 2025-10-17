@@ -479,8 +479,8 @@
                         <input type="datetime-local" id="endTime" name="endTime" required>
                     </div>
                     <div class="form-group">
-                        <label for="sckey">SCKEY (微信推送密钥)</label>
-                        <input type="text" id="sckey" name="sckey" placeholder="请输入Server酱的SCKEY（可选，用于微信推送提醒）">
+ 			<label for="sckey">SCKEY (微信推送密钥，每行一个)</label>
+    			<textarea id="sckey" name="sckey" placeholder="请输入Server酱的SCKEY，每行一个（可选，用于微信推送提醒）&#10;例如：&#10;SCU123456...&#10;SC654321..." rows="3"></textarea>
                     </div>
                     <div class="checkbox-group">
                         <input type="checkbox" id="saveToArchive" name="saveToArchive" checked>
@@ -574,7 +574,13 @@
                 worker: formData.get('worker').trim(),
                 content: formData.get('content').trim(),
                 endTime: formData.get('endTime'),
-                sckey: formData.get('sckey').trim(),
+		// 获取多行 SCKEY，按换行符分割，过滤空行
+		const sckeyText = formData.get('sckey').trim();
+		const sckeyArray = sckeyText
+    			? sckeyText.split('\n')
+        			.map(key => key.trim())
+       				.filter(key => key.length > 0)
+   			 : [];
                 saveToArchive: formData.get('saveToArchive') === 'on',
                 createTime: new Date().toISOString(),
                 notified: false
@@ -639,7 +645,7 @@
                 <td>${escapeHtml(record.worker)}</td>
                 <td>${escapeHtml(record.content)}</td>
                 <td>${formatDateTime(record.endTime)}</td>
-                <td>${escapeHtml(record.sckey || '未设置')}</td>
+		<td>${Array.isArray(record.sckey) && record.sckey.length > 0 ? record.sckey.join(', ') : '未设置'}</td>
                 <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                 <td>${formatDate(record.createTime)}</td>
                 <td><button class="delete-btn" onclick="deleteRecord(${record.id})">删除</button></td>
@@ -695,26 +701,34 @@
             renderArchiveTable();
         }
 
-        function sendNotification(record, statusInfo) {
-            const daysDiff = (new Date(record.endTime) - new Date()) / (1000 * 60 * 60 * 24);
-            let message = '';
-            if (daysDiff < 0) {
-                message = `【工作提醒】任务已过期！\n工作负责人：${record.worker}\n工作票内容：${record.content}\n结束时间：${formatDateTime(record.endTime)}\n当前状态：已过期`;
-            } else if (daysDiff <= 1) {
-                message = `【紧急工作提醒】任务即将到期！\n工作负责人：${record.worker}\n工作票内容：${record.content}\n结束时间：${formatDateTime(record.endTime)}\n剩余时间：约${Math.ceil(daysDiff)}天\n请及时处理！`;
-            } else if (daysDiff <= 2) {
-                message = `【工作提醒】任务即将到期！\n工作负责人：${record.worker}\n工作票内容：${record.content}\n结束时间：${formatDateTime(record.endTime)}\n剩余时间：约${Math.ceil(daysDiff)}天\n请提前准备！`;
-            } else {
-                message = `【工作提醒】任务即将到来！\n工作负责人：${record.worker}\n工作票内容：${record.content}\n结束时间：${formatDateTime(record.endTime)}\n剩余时间：约${Math.ceil(daysDiff)}天`;
-            }
-            console.log('准备发送通知:', message);
-            if (record.sckey) {
-                sendWeChatNotification(record.sckey, message);
-            } else {
-                console.log('未设置SCKEY，仅控制台输出提醒:', message);
-                showAlert(`检测到需要提醒的任务：${record.worker} - ${record.content}`, 'warning');
-            }
-        }
+	function sendNotification(record, statusInfo) {
+   		const now = new Date();
+    		const endDateTime = new Date(record.endTime);
+   		const daysDiff = (endDateTime - now) / (1000 * 60 * 60 * 24);
+
+    		let message = '';
+   		 if (daysDiff < 0) {
+        		message = `【工作提醒】任务已过期！\n工作负责人：${record.worker}\n工作票内容：${record.content}\n结束时间：${formatDateTime(record.endTime)}\n当前状态：已过期`;
+    		} else if (daysDiff <= 1) {
+       			 message = `【紧急工作提醒】任务即将到期！\n工作负责人：${record.worker}\n工作票内容：${record.content}\n结束时间：${formatDateTime(record.endTime)}\n剩余时间：约${Math.ceil(daysDiff * -1)}天\n请及时处理！`;
+    		} else if (daysDiff <= 2) {
+        		message = `【工作提醒】任务即将到期！\n工作负责人：${record.worker}\n工作票内容：${record.content}\n结束时间：${formatDateTime(record.endTime)}\n剩余时间：约${Math.ceil(daysDiff * -1)}天\n请提前准备！`;
+   		 } else {
+        		message = `【工作提醒】任务即将到来！\n工作负责人：${record.worker}\n工作票内容：${record.content}\n结束时间：${formatDateTime(record.endTime)}\n剩余时间：约${Math.ceil(daysDiff)}天`;
+    		}
+
+    		console.log('准备发送通知:', message);
+
+   		if (Array.isArray(record.sckey) && record.sckey.length > 0) {
+        		record.sckey.forEach((sckey, index) => {
+            		console.log(`正在向第 ${index + 1} 个 SCKEY 发送通知:`, sckey);
+            			sendWeChatNotification(sckey, message);
+       			 });
+  		} else {
+       		console.log('未设置任何 SCKEY，仅控制台输出提醒:', message);
+       		showAlert(`检测到需要提醒的任务：${record.worker} - ${record.content}，但没有配置微信通知渠道`, 'warning');
+   		}
+	}
 
         function sendWeChatNotification(sckey, message) {
             const url = `https://sctapi.ftqq.com/${sckey}.send`;
@@ -771,5 +785,3 @@
     </script>
 </body>
 </html>
-
-
