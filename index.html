@@ -284,57 +284,166 @@
             color: #742a2a;
             border: 1px solid #feb2b2;
         }
-
-        /* 响应式设计部分保持不变 */
+        /* 新增：响应式缩放控制 */
         :root {
-            --mobile-scale: 1;
+            --mobile-scale: 1; /* 默认不缩放 */
         }
-
+        
+        /* 手机端缩放控制 */
         @media (max-width: 768px) {
             :root {
-                --mobile-scale: 0.55;
+                --mobile-scale: 0.55; /* 缩小到70% */
             }
-
+            
+            .clock-section {
+                padding: calc(20px * var(--mobile-scale));
+            }
+            
+            .form-section, .archive-section {
+                padding: calc(25px * var(--mobile-scale));
+            }
+            
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: calc(12px * var(--mobile-scale)) calc(15px * var(--mobile-scale));
+                font-size: calc(16px * var(--mobile-scale));
+            }
+            
+            .form-group label {
+                font-size: calc(0.95em * var(--mobile-scale));
+            }
+            
+            .checkbox-group input[type="checkbox"] {
+                transform: scale(calc(1.2 * var(--mobile-scale)));
+            }
+            
+            .submit-btn {
+                padding: calc(14px * var(--mobile-scale)) calc(30px * var(--mobile-scale));
+                min-height: calc(44px * var(--mobile-scale));
+                font-size: calc(16px * var(--mobile-scale));
+            }
+            
+            .table-container {
+                max-height: calc(400px * var(--mobile-scale));
+            }
+            
+            table {
+                font-size: calc(14px * var(--mobile-scale));
+                min-width: calc(600px * var(--mobile-scale));
+            }
+            
+            th, td {
+                padding: calc(10px * var(--mobile-scale)) calc(8px * var(--mobile-scale));
+            }
+            
+            .status-badge {
+                font-size: calc(12px * var(--mobile-scale));
+                min-width: calc(60px * var(--mobile-scale));
+            }
+            
+            .delete-btn {
+                font-size: calc(12px * var(--mobile-scale));
+                min-height: auto;
+            }
+        }
+        
+        /* 更小屏幕的额外调整 */
+        @media (max-width: 480px) {
+            :root {
+                --mobile-scale: 0.5; /* 在更小屏幕上进一步缩小 */
+            }
+            
+            .header h1 {
+                font-size: calc(2.5em * 0.7);
+            }
+            
+            .clock {
+                font-size: calc(2em * 0.7);
+            }
+            
+            .date {
+                font-size: calc(1.2em * 0.7);
+            }
+            
+            table {
+                min-width: calc(600px * 0.65);
+            }
+        }
+        
+        /* 响应式调整保持原有结构但使用缩放变量 */
+        @media (max-width: 768px) {
+            body {
+                padding: calc(10px * var(--mobile-scale));
+            }
+        
             .main-content {
                 grid-template-columns: 1fr;
                 gap: calc(30px * var(--mobile-scale));
                 padding: calc(30px * var(--mobile-scale));
             }
-
-            .clock-section {
-                padding: calc(20px * var(--mobile-scale));
-            }
-
+            
             .form-section, .archive-section {
                 padding: calc(20px * var(--mobile-scale));
             }
-
-            .clock {
-                font-size: calc(2em * 0.7);
+            
+            .form-group {
+                margin-bottom: calc(20px * var(--mobile-scale));
             }
-
-            .date {
-                font-size: calc(1.2em * 0.7);
+            
+            .form-group label {
+                font-size: calc(0.9em * var(--mobile-scale));
             }
-
-            table {
-                font-size: calc(14px * 0.7);
-                min-width: calc(600px * 0.65);
-            }
-
-            th, td {
-                padding: calc(10px * 0.7) calc(8px * 0.7);
-            }
-
-            .status-badge {
-                font-size: calc(12px * 0.7);
-                min-width: calc(60px * 0.7);
-            }
-
-            .form-group input,
-            .form-group textarea {
-                padding: calc(12px * var(--mobile-scale)) calc(15px * var(--mobile-scale));
+            
+            .submit-btn {
+                padding: calc(12px * var(--mobile-scale)) calc(20px * var(--mobile-scale));
                 font-size: calc(16px * var(--mobile-scale));
+                min-height: calc(44px * var(--mobile-scale));
+            }
+            
+            .table-container {
+                max-height: calc(300px * var(--mobile-scale));
+            }
+            
+            table {
+                font-size: calc(12px * var(--mobile-scale));
+                min-width: calc(500px * var(--mobile-scale));
+            }
+            
+            th, td {
+                padding: calc(6px * var(--mobile-scale)) calc(4px * var(--mobile-scale));
+            }
+            
+            .status-badge {
+                font-size: calc(12px * var(--mobile-scale));
+                min-width: calc(50px * var(--mobile-scale));
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: calc(1.5em * 0.5);
+            }
+        
+            .clock {
+                font-size: calc(1.8em * 0.5);
+            }
+        
+            .date {
+                font-size: calc(1.1em * 0.5);
+            }
+            
+            table {
+                font-size: calc(11px * 0.5);
+            }
+            
+            th, td {
+                padding: calc(4px * 0.5) calc(2px * 0.5);
+            }
+            
+            .status-badge {
+                font-size: calc(11px * 0.5);
+                min-width: calc(50px * 0.5);
             }
         }
     </style>
